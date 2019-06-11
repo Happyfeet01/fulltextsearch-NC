@@ -37,3 +37,9 @@ and the Volume for the persitant Data:
 volumes:
   - /opt/docker-ncsearch/elasticsearch-data/:/usr/share/elasticsearch/data
 ```
+
+Start the Container with
+
+```
+docker-compose up -d
+```
