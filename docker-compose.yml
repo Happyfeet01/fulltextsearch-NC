@@ -1,0 +1,63 @@
+    # Docker images: https://www.docker.elastic.co
+    # Getting started:
+    # $ echo "vm.max_map_count=262144" >> /etc/sysctl.conf && sysctl -p # execute on [host]
+    # $ curl -L https://github.com/docker/compose/releases/download/$(curl -Ls https://www.servercow.de/docker-compose/latest.php)/docker-compose-$(uname -s)-$(uname -m) > /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
+    # $ mkdir -p /opt/docker-ncsearch && cd /opt/docker-ncsearch
+    # $ # <Save this file as docker-compose.yml>
+    # $ mkdir -p docker-elasticsearch && echo -e "FROM docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.1\nRUN /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch ingest-attachment" > docker-elasticsearch/Dockerfile
+    # $ mkdir -p elasticsearch-data && chown 1000:1000 elasticsearch-data/ -R
+    # $ docker-compose up -d
+    #
+    version: '2.2'
+    services:
+      elasticsearch1:
+        build: ./elasticsearch
+        container_name: esnode1
+        restart: always
+        environment:
+          - cluster.name=ncsearch
+          - bootstrap.memory_lock=true
+          - discovery.type=single-node #Quelle: https://github.com/elastic/elasticsearch/issues/25067
+          - "ES_JAVA_OPTS=-Xms750m -Xmx750m"
+          - "network.host=0.0.0.0"
+        ulimits:
+          memlock:
+            soft: -1
+            hard: -1
+        # location for persistent data
+        volumes:
+          - /opt/docker-ncsearch/nc-data/:/usr/share/elasticsearch/data
+        ports: # make elasticsearch reachable on the host itself, when Nextcloud running on the host
+          - "127.0.0.1:9200:9200"
+        expose:  # make elasticsearch reachable in the internal docker network
+          - "9200" # direct elasticsearch connection
+        networks:
+          ncsearch-network:
+            ipv4_address: 172.22.1.235
+            aliases:
+              - elasticsearch1
+      # just a web interface to monitor status
+      kibana:
+        image: docker.elastic.co/kibana/kibana-oss:7.1.1
+        container_name: kibana
+        restart: always
+        depends_on:
+           - elasticsearch1
+        environment:
+          - "SERVER_BASEPATH=/eskibana"
+          - "ELASTICSEARCH_URL=http://127.0.0.1:9200"
+        ports:
+          - "127.0.0.1:5601:5601"
+        networks:
+          ncsearch-network:
+            ipv4_address: 172.22.1.236
+            aliases:
+              - kibana
+    networks:
+      ncsearch-network:
+        driver: bridge
+        ipam:
+          driver: default
+          config:
+            # 192.22.1.232 (ID) - 192.22.1.239 (BC)
+            - subnet: 172.22.1.232/29
