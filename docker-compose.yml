@@ -4,7 +4,7 @@
     # $ curl -L https://github.com/docker/compose/releases/download/$(curl -Ls https://www.servercow.de/docker-compose/latest.php)/docker-compose-$(uname -s)-$(uname -m) > /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
     # $ mkdir -p /opt/docker-ncsearch && cd /opt/docker-ncsearch
     # $ # <Save this file as docker-compose.yml>
-    # $ mkdir -p docker-elasticsearch && echo -e "FROM docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.1\nRUN /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch ingest-attachment" > docker-elasticsearch/Dockerfile
+    # $ mkdir -p docker-elasticsearch && echo -e "FROM docker.elastic.co/elasticsearch/elasticsearch-oss:7.1.1\nRUN /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch ingest-attachment" > docker-elasticsearch/Dockerfile
     # $ mkdir -p elasticsearch-data && chown 1000:1000 elasticsearch-data/ -R
     # $ docker-compose up -d
     #
