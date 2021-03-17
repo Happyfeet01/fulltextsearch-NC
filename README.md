@@ -18,7 +18,7 @@ mkdir -p /opt/docker-ncsearch && cd /opt/docker-ncsearch
 ```
 create an Dockerfile to install the correct Version of Elasticsearch and Ingest-Attachment
 ```
-mkdir -p elasticsearch && echo -e "FROM docker.elastic.co/elasticsearch/elasticsearch-oss:7.1.1\nRUN /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch ingest-attachment" > docker-elasticsearch/Dockerfile
+mkdir -p elasticsearch && echo -e "FROM docker.elastic.co/elasticsearch/elasticsearch-oss:7.11.1\nRUN /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch ingest-attachment" > docker-elasticsearch/Dockerfile
 ```
 
 Set the correct permission:
